@@ -10,7 +10,5 @@ public class EventGetDto
     public string Description { get; set; }
     public DateTime Date { get; set; }
     public int MaxParticipants { get; set; }
-    public ICollection<ParticipantGetDto>? Participants { get; set; }
-    public ICollection<PrelegentGetDto>? Prelegents { get; set; }
     
 }

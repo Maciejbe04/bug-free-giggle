@@ -17,7 +17,7 @@ public interface IDbService
     
     public Task DeleteRegistrationAsync(int participantId);
     
-    public Task<IEnumerable<EventGetDto>> GetAllEventsAsync();
+    public Task<IEnumerable<EventDetailsGetDto>> GetAllEventsAsync();
     
     
 }
@@ -160,15 +160,18 @@ public class DbService(AppDbContext data) : IDbService
         
     }
 
-    public async Task<IEnumerable<EventGetDto>> GetAllEventsAsync()
+    public async Task<IEnumerable<EventDetailsGetDto>> GetAllEventsAsync()
     {
-        return await data.Events.Select(e => new EventGetDto
+        return await data.Events.Select(e => new EventDetailsGetDto()
         {
             Id = e.Id,
             Title = e.Title,
             Description = e.Description,
             Date = e.Date,
             MaxParticipants = e.MaxParticipants,
+            ParticipantCount = e.Registration.Count,
+            Remaining = e.MaxParticipants - e.Registration.Count,
+            
             Participants = e.Registration.Select(r => new ParticipantGetDto
             {
                 Id = r.Id,
@@ -176,6 +179,7 @@ public class DbService(AppDbContext data) : IDbService
                 LastName = r.Participant.LastName,
                 Email = r.Participant.Email,
             }).ToList(),
+            
             Prelegents = e.EventPrelegent.Select( ep => new PrelegentGetDto
             {
                 Id = ep.Prelegent.Id,
